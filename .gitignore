@@ -13,6 +13,4 @@ vendor
 .idea
 benchmark
 coverage
-.foo
-.bar
-.baz
+ignored_by_test.txt
