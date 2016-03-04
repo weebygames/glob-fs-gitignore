@@ -4,7 +4,7 @@
 var fs = require('fs');
 var assert = require('assert');
 var glob = require('glob-fs');
-var mkdirp = require('mkdirp');
+var logging = require('devkit-logging');
 var gitignore = require('./');
 
 function has(files, fp) {
@@ -13,6 +13,8 @@ function has(files, fp) {
 
 describe('gitignore', function (done) {
   var tempfiles = ['.foo', '.bar', '.baz'];
+  var gitignoreOpts = { gitignoreLogLevel: logging.LEVELS.DEBUG.level };
+
   before(function () {
     tempfiles.forEach(function (fp) {
       fs.writeFileSync(fp, 'temp');
@@ -27,7 +29,7 @@ describe('gitignore', function (done) {
 
   it('should ignore files specified in `.gitignore` automatically:', function (done) {
     glob()
-      .use(gitignore())
+      .use(gitignore(gitignoreOpts))
       .readdir('*', function (err, files) {
         assert.equal(has(files, '.DS_Store'), false);
         done();
@@ -36,7 +38,7 @@ describe('gitignore', function (done) {
 
   it('should not use `.gitignore` when `gitignore: false` is passed:', function (done) {
     glob({ gitignore: false, dot: true })
-      .use(gitignore())
+      .use(gitignore(gitignoreOpts))
       .readdir('*', function (err, files) {
         assert.equal(has(files, '.foo'), true);
         assert.equal(has(files, '.bar'), true);
